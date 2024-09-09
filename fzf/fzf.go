@@ -9,7 +9,11 @@ import (
 	"github.com/Danielratmiroff/pretty-fzf/themes"
 )
 
-func NewDefaultConfig() FZFConfig {
+type Params struct {
+	Theme string
+}
+
+func NewDefaultConfig(params *Params) FZFConfig {
 	return FZFConfig{
 		Preview: PreviewConfig{
 			Command: "batcat --style=numbers --color=always --line-range :300 {}",

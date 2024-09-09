@@ -12,11 +12,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-type Params struct {
-	theme string
-}
-
-var params Params
+var params *fzf.Params
 
 var rootCmd = &cobra.Command{
 	Use:   "Pretty fzf",
@@ -27,7 +23,7 @@ var rootCmd = &cobra.Command{
 			log.Fatalf("Error configuring with params: %v", err)
 		}
 
-		fzfConfig := fzf.NewDefaultConfig()
+		fzfConfig := fzf.NewDefaultConfig(params)
 
 		err := fzf.RunCommand(fzfConfig)
 		if err != nil {
@@ -37,9 +33,9 @@ var rootCmd = &cobra.Command{
 }
 
 func saveParamsAsConfig() error {
-	if params.theme != "" {
-		fmt.Printf("Set new theme: %s\n", params.theme)
-		newTheme := themes.SelectTheme(params.theme)
+	if params.Theme != "" {
+		fmt.Printf("Set new theme: %s\n", params.Theme)
+		newTheme := themes.SelectTheme(params.Theme)
 		viper.Set("theme", newTheme)
 	}
 
@@ -50,7 +46,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	// Register flags
-	rootCmd.Flags().StringVarP(&params.theme, "theme", "t", "", "Set the theme")
+	rootCmd.Flags().StringVarP(&params.Theme, "theme", "t", "", "Set the theme")
 
 	// Bind flags to viper
 	viper.BindPFlags(rootCmd.Flags())
