@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-var params *fzf.Params
+var params fzf.Params
 
 var rootCmd = &cobra.Command{
 	Use:   "Pretty fzf",

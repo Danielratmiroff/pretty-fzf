@@ -13,13 +13,14 @@ type Params struct {
 	Theme string
 }
 
-func NewDefaultConfig(params *Params) FZFConfig {
+func NewDefaultConfig(params Params) FZFConfig {
+	theme := themes.SelectTheme(params.Theme)
 	return FZFConfig{
 		Preview: PreviewConfig{
 			Command: "batcat --style=numbers --color=always --line-range :300 {}",
 			Window:  "right:60%",
 		},
-		Colors: themes.ColorScheme{},
+		Colors: theme,
 		KeyBindings: []KeyBinding{
 			{Key: "ctrl-d", Action: "preview-down"},
 			{Key: "ctrl-u", Action: "preview-up"},
