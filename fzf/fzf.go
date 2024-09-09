@@ -17,7 +17,7 @@ func NewDefaultConfig(params Params) FZFConfig {
 	theme := themes.SelectTheme(params.Theme)
 	return FZFConfig{
 		Preview: PreviewConfig{
-			Command: "batcat --style=numbers --color=always --line-range :300 {}",
+			Command: "batcat --theme='Catppuccin Mocha' --style=numbers --color=always --line-range :300 {}",
 			Window:  "right:60%",
 		},
 		Colors: theme,

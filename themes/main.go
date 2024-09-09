@@ -3,8 +3,12 @@ package themes
 import "fmt"
 
 var themesMap = map[string]func() ColorScheme{
-	"catpuccino": Catpuccino,
-	"gruvbox":    Gruvbox,
+	"catpuccin":          CatpuccinoMocha,
+	"catpuccinMocha":     CatpuccinoMocha,
+	"catpuccinMacchiato": CatppuccinMacchiato,
+	"catpuccinLatte":     CatppuccinLatte,
+	"catpuccinFrappe":    CatppuccinFrappe,
+	"gruvbox":            Gruvbox,
 }
 
 func SelectTheme(theme string) ColorScheme {

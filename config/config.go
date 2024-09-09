@@ -29,7 +29,7 @@ func LoadConfig() error {
 	viper.SetEnvPrefix("PRETTYFZF")
 
 	// Set default values
-	viper.SetDefault("theme", "catpuccino")
+	viper.SetDefault("theme", "catpuccin")
 
 	if err := handleConfigFile(); err != nil {
 		return err

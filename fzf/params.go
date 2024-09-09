@@ -24,7 +24,7 @@ type FZFConfig struct {
 }
 
 func (c FZFConfig) ColorString() string {
-	return fmt.Sprintf("bg:%s,fg:%s,header:%s,info:%s,pointer:%s,marker:%s,spinner:%s,prompt:%s,hl:%s",
+	return fmt.Sprintf("bg:%s,fg:%s,header:%s,info:%s,pointer:%s,marker:%s,spinner:%s,prompt:%s",
 		c.Colors.Background,
 		c.Colors.Foreground,
 		c.Colors.Header,
@@ -33,7 +33,15 @@ func (c FZFConfig) ColorString() string {
 		c.Colors.Marker,
 		c.Colors.Spinner,
 		c.Colors.Prompt,
+	)
+}
+
+func (c FZFConfig) HighlightColorString() string {
+	return fmt.Sprintf("hl:%s,hl+:%s,fg+:%s,bg+:%s",
 		c.Colors.Highlight,
+		c.Colors.SelectedHighlight,
+		c.Colors.SelectedForeground,
+		c.Colors.SelectedBackground,
 	)
 }
 
@@ -50,6 +58,7 @@ func (c FZFConfig) ToCommandArgs() []string {
 		"--preview", c.Preview.Command,
 		"--preview-window", c.Preview.Window,
 		"--color", c.ColorString(),
+		"--color", c.HighlightColorString(),
 		"--bind", c.BindString(),
 	}
 }
