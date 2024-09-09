@@ -31,6 +31,18 @@ func LoadConfig() error {
 	// Set default values
 	viper.SetDefault("theme", "catpuccino")
 
+	if err := handleConfigFile(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func SaveConfig() error {
+	return viper.WriteConfig()
+}
+
+func handleConfigFile() error {
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			// Config file not found; create it
@@ -45,8 +57,4 @@ func LoadConfig() error {
 		}
 	}
 	return nil
-}
-
-func SaveConfig() error {
-	return viper.WriteConfig()
 }
