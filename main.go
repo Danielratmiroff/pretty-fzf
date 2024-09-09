@@ -6,28 +6,36 @@ import (
 
 	"github.com/Danielratmiroff/pretty-fzf/config"
 	"github.com/Danielratmiroff/pretty-fzf/fzf"
+	"github.com/Danielratmiroff/pretty-fzf/themes"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
+
+type Params struct {
+	Theme string
+}
+
+var params Params
 
 var rootCmd = &cobra.Command{
 	Use:   "Pretty fzf",
 	Short: "Pretty fzf wrapper",
 	Long:  "Pretty fzf wrapper long",
 	Run: func(cmd *cobra.Command, args []string) {
-		if runFlag, _ := cmd.Flags().GetBool("run"); runFlag {
-			fmt.Println("Running the prompt...")
+		if params.Theme != "" {
+			fmt.Printf("Set new theme: %s\n", params.Theme)
+			newTheme := themes.SelectTheme(params.Theme)
+			viper.Set("theme", newTheme)
 		}
 
-		params := fzf.NewDefaultConfig()
+		fzfConfig := fzf.NewDefaultConfig()
+		// Apply params to fzfConfig here
 
-		err := fzf.RunCommand(params)
-
+		err := fzf.RunCommand(fzfConfig)
 		if err != nil {
 			log.Fatalf("Error running fzf: %v", err)
 		}
-
 	},
 }
 
@@ -35,10 +43,11 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	// Register flags
-	rootCmd.Flags().BoolP("run", "r", false, "Execute the prompt")
+	rootCmd.Flags().StringVarP(&params.Theme, "theme", "t", "", "Set the theme")
+	// Add more flags here
 
 	// Bind flags to viper
-	viper.BindPFlag("run", rootCmd.Flags().Lookup("run"))
+	viper.BindPFlags(rootCmd.Flags())
 }
 
 func initConfig() {
@@ -49,7 +58,12 @@ func initConfig() {
 		log.Fatalf("Error loading config: %v", err)
 	}
 
-	// Optionally, you can set viper values here if needed
+	// Defaults
+	theme := viper.GetString("theme")
+	if theme == "" {
+		viper.Set("theme", themes.Catpuccino())
+	}
+
 	viper.Set("Var1", config.Var1)
 	viper.Set("Var2", config.Var2)
 	viper.Set("Var3", config.Var3)
