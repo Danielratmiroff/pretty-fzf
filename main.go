@@ -41,17 +41,22 @@ func init() {
 	viper.BindPFlag("run", rootCmd.Flags().Lookup("run"))
 }
 
+func initConfig() {
+	var err error
+	// Load the configuration
+	config, err := config.LoadConfig()
+	if err != nil {
+		log.Fatalf("Error loading config: %v", err)
+	}
+
+	// Optionally, you can set viper values here if needed
+	viper.Set("Var1", config.Var1)
+	viper.Set("Var2", config.Var2)
+	viper.Set("Var3", config.Var3)
+}
+
 func main() {
 	if err := rootCmd.Execute(); err != nil {
 		panic(err)
 	}
-
-	config, err := config.LoadConfig()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("Var1: %s\n", config.Var1)
-	fmt.Printf("Var2: %s\n", config.Var2)
-	fmt.Printf("Var3: %s\n", config.Var3)
 }
