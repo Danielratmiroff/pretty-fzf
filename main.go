@@ -30,7 +30,6 @@ var rootCmd = &cobra.Command{
 		}
 
 		fzfConfig := fzf.NewDefaultConfig()
-		// Apply params to fzfConfig here
 
 		err := fzf.RunCommand(fzfConfig)
 		if err != nil {
@@ -44,29 +43,17 @@ func init() {
 
 	// Register flags
 	rootCmd.Flags().StringVarP(&params.Theme, "theme", "t", "", "Set the theme")
-	// Add more flags here
 
 	// Bind flags to viper
 	viper.BindPFlags(rootCmd.Flags())
 }
 
 func initConfig() {
-	var err error
-	// Load the configuration
-	config, err := config.LoadConfig()
+	err := config.LoadConfig()
+
 	if err != nil {
 		log.Fatalf("Error loading config: %v", err)
 	}
-
-	// Defaults
-	theme := viper.GetString("theme")
-	if theme == "" {
-		viper.Set("theme", themes.Catpuccino())
-	}
-
-	viper.Set("Var1", config.Var1)
-	viper.Set("Var2", config.Var2)
-	viper.Set("Var3", config.Var3)
 }
 
 func main() {
