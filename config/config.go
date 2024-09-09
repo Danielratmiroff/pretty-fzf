@@ -44,6 +44,9 @@ func LoadConfig() error {
 			return fmt.Errorf("error reading config file: %w", err)
 		}
 	}
-
 	return nil
+}
+
+func SaveConfig() error {
+	return viper.WriteConfig()
 }
