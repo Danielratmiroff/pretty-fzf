@@ -15,9 +15,11 @@ type Params struct {
 
 func NewDefaultConfig(params Params) FZFConfig {
 	theme := themes.SelectTheme(params.Theme)
+	batcatTheme := themes.SelectBatcatTheme(params.Theme)
+
 	return FZFConfig{
 		Preview: PreviewConfig{
-			Command: "batcat --theme='Catppuccin Mocha' --style=numbers --color=always --line-range :300 {}",
+			Command: fmt.Sprintf("batcat --theme='%s' --style=numbers --color=always --line-range :300 {}", batcatTheme),
 			Window:  "right:60%",
 		},
 		Colors: theme,
