@@ -56,7 +56,7 @@ func (c FZFConfig) BindString() string {
 
 func (c FZFConfig) ToCommandArgs() []string {
 	return []string{
-		"--preview", c.Preview.Command,
+		// "--preview", c.Preview.Command,
 		"--preview-window", c.Preview.Window,
 		"--color", c.ColorString(),
 		"--color", c.HighlightColorString(),

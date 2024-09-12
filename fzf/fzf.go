@@ -37,8 +37,12 @@ func NewDefaultConfig(params Params) FZFConfig {
 func RunCommand(config FZFConfig) error {
 	args := config.ToCommandArgs()
 
+	// Wrap the preview command in single quotes
+	previewCmd := fmt.Sprintf("'%s'", config.Preview.Command)
+	fzfCmd := fmt.Sprintf("%s | fzf --preview %s", config.Cmd.RunCmd, previewCmd)
+
 	// Build the fzf command
-	fzfArgs := append([]string{"-c", config.Cmd.RunCmd + " | fzf"}, args...)
+	fzfArgs := append([]string{"-c", fzfCmd}, args...)
 	fmt.Printf("Running command: sh %s\n", strings.Join(fzfArgs, " "))
 
 	cmd := exec.Command("sh", fzfArgs...)

@@ -38,7 +38,7 @@ func changeDirectory() func(string) Commands {
 	return func(string) Commands {
 		return Commands{
 			OutputCmd:  "cd",
-			PreviewCmd: "'tree -C {} | head -200'",
+			PreviewCmd: "tree -C {} | head -200",
 			RunCmd:     "find . -maxdepth 1 -type d",
 		}
 	}
@@ -48,7 +48,7 @@ func findFile(theme string) func(string) Commands {
 	return func(string) Commands {
 		return Commands{
 			OutputCmd:  "vim",
-			PreviewCmd: fmt.Sprintf("batcat --theme='%s' --style=numbers --color=always --line-range :300 {}", theme),
+			PreviewCmd: fmt.Sprintf(`batcat --theme="%s" --style=numbers --color=always --line-range :300 {}`, theme),
 			RunCmd:     "fdfind --type f --hidden --follow --exclude .git",
 		}
 	}
