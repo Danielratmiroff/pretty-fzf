@@ -37,26 +37,33 @@ func NewDefaultConfig(params Params) FZFConfig {
 func RunCommand(config FZFConfig) error {
 	args := config.ToCommandArgs()
 
-	// Build main(run) command
-	fullCmd := fmt.Sprintf("%s | fzf %s", config.Cmd.RunCmd, strings.Join(args, " "))
-	fmt.Println("Executing command:", fullCmd)
+	// Build the fzf command
+	fzfArgs := append([]string{"-c", config.Cmd.RunCmd + " | fzf"}, args...)
+	fmt.Printf("Running command: sh %s\n", strings.Join(fzfArgs, " "))
 
-	fzfCmd := exec.Command(fullCmd)
+	cmd := exec.Command("sh", fzfArgs...)
 
-	fzfCmd.Stdin = os.Stdin
-	fzfCmd.Stderr = os.Stderr
-	// Capture the output of fzf
-	output, err := fzfCmd.Output()
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
+
+	// Capture the output
+	output, err := cmd.Output()
 	if err != nil {
-		return err
+		if exitErr, ok := err.(*exec.ExitError); ok && exitErr.ExitCode() == 130 {
+			fmt.Println("fzf was cancelled by the user")
+			return nil
+		}
+		panic(err)
 	}
 
-	selectedPath := strings.TrimSpace(string(output))
+	outputPath := strings.TrimSpace(string(output))
 
-	// Execute output command
-	cdCmd := exec.Command(config.Cmd.OutputCmd, selectedPath)
+	if outputPath != "" {
+		// fmt.Printf("Selected path: %s\n", selectedPath)
+		fmt.Printf("%s %s\n", config.Cmd.OutputCmd, outputPath)
+	} else {
+		panic("No output path selected")
+	}
 
-	fmt.Printf("Changing directory to: %s\n", selectedPath)
-
-	return cdCmd.Run()
+	return nil
 }
