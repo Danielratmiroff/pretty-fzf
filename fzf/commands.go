@@ -17,7 +17,7 @@ var cmdsMap = map[string]func(string) Commands{
 	"cd": func(theme string) Commands {
 		return changeDirectory()("")
 	},
-	"findfile": func(theme string) Commands {
+	"vim": func(theme string) Commands {
 		return findFile(theme)("")
 	},
 }
@@ -47,7 +47,7 @@ func changeDirectory() func(string) Commands {
 func findFile(theme string) func(string) Commands {
 	return func(string) Commands {
 		return Commands{
-			OutputCmd:  "cat",
+			OutputCmd:  "vim",
 			PreviewCmd: fmt.Sprintf("batcat --theme='%s' --style=numbers --color=always --line-range :300 {}", theme),
 			RunCmd:     "fdfind --type f --hidden --follow --exclude .git",
 		}
