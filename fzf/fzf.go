@@ -11,15 +11,16 @@ import (
 
 type Params struct {
 	Theme string
+	Cmd   string
 }
 
 func NewDefaultConfig(params Params) FZFConfig {
 	theme := themes.SelectTheme(params.Theme)
-	batcatTheme := themes.SelectBatcatTheme(params.Theme)
+	command := SelectCmd(params)
 
 	return FZFConfig{
 		Preview: PreviewConfig{
-			Command: fmt.Sprintf("batcat --theme='%s' --style=numbers --color=always --line-range :300 {}", batcatTheme),
+			Command: command.preview,
 			Window:  "right:60%",
 		},
 		Colors: theme,
@@ -29,23 +30,33 @@ func NewDefaultConfig(params Params) FZFConfig {
 			{Key: "ctrl-f", Action: "preview-page-down"},
 			{Key: "ctrl-b", Action: "preview-page-up"},
 		},
+		Cmd: params.Cmd,
 	}
 }
 
 func RunCommand(config FZFConfig) error {
 	args := config.ToCommandArgs()
 
-	// Prepare the command
-	cmd := exec.Command("fzf", args...)
+	fzfCmd := exec.Command("fish", "-c", "find . -maxdepth 1 -type d | fzf "+strings.Join(args, " "))
 
-	// Set up the command's standard input, output, and error
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	fzfCmd.Stdin = os.Stdin
+	fzfCmd.Stderr = os.Stderr
 
-	// Create a single string of all arguments for debugging
+	// Capture the output of fzf
+	output, err := fzfCmd.Output()
+	if err != nil {
+		return err
+	}
+
 	fullCommand := "fzf " + strings.Join(args, " ")
 	fmt.Println("Executing command:", fullCommand)
 
-	return cmd.Run()
+	selectedPath := strings.TrimSpace(string(output))
+
+	// Execute the cd command
+	cdCmd := exec.Command(config.Cmd, selectedPath)
+
+	fmt.Printf("Changing directory to: %s\n", selectedPath)
+
+	return cdCmd.Run()
 }

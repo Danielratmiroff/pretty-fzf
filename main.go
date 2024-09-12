@@ -47,6 +47,7 @@ func init() {
 
 	// Register flags
 	rootCmd.Flags().StringVarP(&params.Theme, "theme", "t", "", "Set the theme")
+	rootCmd.Flags().StringVarP(&params.Cmd, "cmd", "c", "", "Select a command")
 
 	// Bind flags to viper
 	viper.BindPFlags(rootCmd.Flags())
