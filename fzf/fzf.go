@@ -20,7 +20,7 @@ func NewDefaultConfig(params Params) FZFConfig {
 
 	return FZFConfig{
 		Preview: PreviewConfig{
-			Command: command.preview,
+			Command: command.PreviewCmd,
 			Window:  "right:60%",
 		},
 		Colors: theme,
@@ -30,31 +30,31 @@ func NewDefaultConfig(params Params) FZFConfig {
 			{Key: "ctrl-f", Action: "preview-page-down"},
 			{Key: "ctrl-b", Action: "preview-page-up"},
 		},
-		Cmd: params.Cmd,
+		Cmd: command,
 	}
 }
 
 func RunCommand(config FZFConfig) error {
 	args := config.ToCommandArgs()
 
-	fzfCmd := exec.Command("fish", "-c", "find . -maxdepth 1 -type d | fzf "+strings.Join(args, " "))
+	// Build main(run) command
+	fullCmd := fmt.Sprintf("%s | fzf %s", config.Cmd.RunCmd, strings.Join(args, " "))
+	fmt.Println("Executing command:", fullCmd)
+
+	fzfCmd := exec.Command(fullCmd)
 
 	fzfCmd.Stdin = os.Stdin
 	fzfCmd.Stderr = os.Stderr
-
 	// Capture the output of fzf
 	output, err := fzfCmd.Output()
 	if err != nil {
 		return err
 	}
 
-	fullCommand := "fzf " + strings.Join(args, " ")
-	fmt.Println("Executing command:", fullCommand)
-
 	selectedPath := strings.TrimSpace(string(output))
 
-	// Execute the cd command
-	cdCmd := exec.Command(config.Cmd, selectedPath)
+	// Execute output command
+	cdCmd := exec.Command(config.Cmd.OutputCmd, selectedPath)
 
 	fmt.Printf("Changing directory to: %s\n", selectedPath)
 

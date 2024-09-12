@@ -21,7 +21,7 @@ type FZFConfig struct {
 	Preview     PreviewConfig
 	Colors      themes.ColorScheme
 	KeyBindings []KeyBinding
-	Cmd         string
+	Cmd         Commands
 }
 
 func (c FZFConfig) ColorString() string {
