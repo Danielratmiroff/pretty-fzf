@@ -1,1 +1,1 @@
- readme Fzf
+Pretty fuzzy finder wrapper
