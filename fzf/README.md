@@ -1,1 +1,1 @@
-Pretty fuzzy finder wrapper
+Pretty finder
